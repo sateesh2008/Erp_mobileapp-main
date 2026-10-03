@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "IDPS Madanapalle",
+    "slug": "EduCampus360",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/Dpslogo-icon.png",
+    "scheme": "educampus360",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/Dpslogo-icon.png"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/Dpslogo-icon.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.EduCampus360"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/Dpslogo-icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#208AEF",
+          "image": "./assets/Dpslogo.jpeg",
+          "imageWidth": 76,
+          "resizeMode": "contain"
+        }
+      ],
+      "@react-native-community/datetimepicker",
+      "expo-image",
+      "expo-web-browser",
+      "expo-sharing"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a035b46b-85d1-43e8-a481-34683e906c89"
+      }
+    }
+  }
+}
