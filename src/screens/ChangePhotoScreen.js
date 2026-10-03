@@ -111,21 +111,25 @@ export default function ChangePhotoScreen({
         result?.imageUrl ||
         result?.url ||
         result?.image_url ||
-        result?.imageUrl ||
         result?.photo_url ||
         result?.photoUrl ||
         "";
 
-      if (uploadedUrl) {
-        onSaved({
+      onSaved(
+        {
           ...selectedStudent,
-          photoUrl: uploadedUrl,
-          photo_url: uploadedUrl,
-          image_url: uploadedUrl,
-          profile_image: uploadedUrl,
-          profile_image_url: uploadedUrl,
-        });
-      }
+          ...(uploadedUrl
+            ? {
+                photoUrl: uploadedUrl,
+                photo_url: uploadedUrl,
+                image_url: uploadedUrl,
+                profile_image: uploadedUrl,
+                profile_image_url: uploadedUrl,
+              }
+            : {}),
+        },
+        uploadedUrl,
+      );
 
       if (onSuccess) {
         onSuccess();

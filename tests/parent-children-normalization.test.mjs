@@ -22,3 +22,13 @@ test("supports nested student objects and generic id fallback", () => {
   assert.equal(result[0].id, 3378);
   assert.equal(result[1].id, 4455);
 });
+
+test("preserves the profile image URL from the children API response", () => {
+  const profileImageUrl = "https://school.example/uploads/ward.png";
+  const result = normalizeParentChildren({
+    success: true,
+    data: [{ id: 1, first_name: "Joshii", profile_image_url: profileImageUrl }],
+  });
+
+  assert.equal(result[0].profile_image_url, profileImageUrl);
+});

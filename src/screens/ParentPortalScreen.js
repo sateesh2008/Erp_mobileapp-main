@@ -336,6 +336,7 @@ function HomeContent({
   dashboard,
   selectedStudent,
   students,
+  photoAvatarRefreshKey,
   onSelectStudent,
   onRefresh,
   onAnnouncementRead,
@@ -553,7 +554,10 @@ function HomeContent({
           </ScrollView>
 
           <View style={dashboardStyles.summaryBanner}>
-            <ProfileAvatar student={selectedWard} />
+            <ProfileAvatar
+              key={`${selectedWard?.id ?? "none"}-${photoAvatarRefreshKey}`}
+              student={selectedWard}
+            />
             <View style={dashboardStyles.summaryBannerCopy}>
               <Text style={dashboardStyles.summaryBannerLabel}>CURRENT CHILD</Text>
               <Text style={dashboardStyles.summaryBannerTitle} numberOfLines={1}>
@@ -1191,6 +1195,7 @@ export default function ParentPortalScreen({ onLogout, session }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [changePhotoOpen, setChangePhotoOpen] = useState(false);
   const [changePhotoKey, setChangePhotoKey] = useState(0);
+  const [photoAvatarRefreshKey, setPhotoAvatarRefreshKey] = useState(0);
   const [photoSuccessMessage, setPhotoSuccessMessage] = useState("");
   const isHome = activeTab === "Home";
   const syncAnnouncements = useCallback((announcements) => {
@@ -1375,6 +1380,37 @@ export default function ParentPortalScreen({ onLogout, session }) {
       ),
     );
   }, []);
+  const handlePhotoSaved = useCallback((updatedStudent, uploadedImageUrl) => {
+    updateSelectedStudent(updatedStudent);
+    setPhotoAvatarRefreshKey((current) => current + 1);
+    if (uploadedImageUrl || !updatedStudent?.id) return;
+
+    void parentApi
+      .getChildProfile(updatedStudent.id, session)
+      .then((profile) => {
+        const profileImageUrl =
+          typeof profile?.profile_image_url === "string"
+            ? profile.profile_image_url
+            : "";
+        if (!profileImageUrl) return;
+
+        updateSelectedStudent({
+          ...profile,
+          id: updatedStudent.id,
+          profile_image_url: profileImageUrl,
+        });
+        setPhotoAvatarRefreshKey((current) => current + 1);
+      })
+      .catch((requestError) => {
+        if (__DEV__) {
+          console.warn("[Parent] child profile refresh after photo upload failed", {
+            kind: requestError?.kind,
+            status: requestError?.status,
+            message: requestError?.message,
+          });
+        }
+      });
+  }, [session, updateSelectedStudent]);
   useEffect(() => {
     const childId = selectedStudentIdForProfile;
     if (!childId || selectedStudentPhotoUri) return undefined;
@@ -1510,6 +1546,7 @@ export default function ParentPortalScreen({ onLogout, session }) {
             dashboard={dashboard}
             selectedStudent={selectedStudent}
             students={students}
+            photoAvatarRefreshKey={photoAvatarRefreshKey}
             onSelectStudent={setSelectedStudentId}
             onRefresh={loadDashboard}
             onAnnouncementRead={updateAnnouncementReadState}
@@ -1604,7 +1641,7 @@ export default function ParentPortalScreen({ onLogout, session }) {
         onClose={() => setChangePhotoOpen(false)}
         session={session}
         selectedStudent={selectedStudent}
-        onSaved={updateSelectedStudent}
+        onSaved={handlePhotoSaved}
       />
     </SafeAreaView>
   );
