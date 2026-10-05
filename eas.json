@@ -5,6 +5,15 @@
       "android": {
         "buildType": "apk"
       }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      }
     }
+  },
+  "cli": {
+    "appVersionSource": "remote"
   }
 }
